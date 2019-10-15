@@ -16,6 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="third_game_prodject"
+run/main_scene="res://player/Player.tscn"
 config/icon="res://icon.png"
 
 [input]
