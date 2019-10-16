@@ -7,10 +7,10 @@
 
 [node name="Player" type="RigidBody2D"]
 linear_damp = 1.0
-angular_damp = 5.0
+angular_damp = 48.0
 script = ExtResource( 1 )
-engine_power = 500
-spin_power = 500
+engine_power = 1500
+spin_power = 15000
 
 [node name="Sprite" type="Sprite" parent="."]
 rotation = 1.5708
