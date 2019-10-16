@@ -1,25 +1,36 @@
 extends RigidBody2D
 
+# shoot signal for Bullet scene
+signal shoot
+# bullet scene
+export (PackedScene) var Bullet
+export (float) var fire_rate
+var can_shoot = true
+
 #state for FSM
 var state = null
-#Create constants for states
+#Create constants for FSM states
 enum {INIT, ALIVE, INVULNERABLE, DEAD}
-#EP for physics
+
+#EP for physics (used on linear speed vector)
 export (int) var engine_power
-#EP for physics
+# value of angular speed
 export (int) var spin_power
-#for angular speed
+# value of linear speed
 var thrust = Vector2()
-#vector of angular speed
+# vector of angular speed
 var rotation_dir = 0
-#Screen whrap
+# for screen whrap
 var screensize = Vector2()
+
 
 func _ready():
 	#Change Phayer state to ALIVE
 	change_state(ALIVE)
 	#Set screensize to viewport
 	screensize = get_viewport().get_visible_rect().size
+	#Set fire_rate to timer
+	$GunTimer.wait_time = fire_rate
 	
 	
 func change_state(new_state):
@@ -49,6 +60,15 @@ func get_input():
 		rotation_dir -= 1
 	if Input.is_action_pressed("rotate_right"):
 		rotation_dir += 1
+	if Input.is_action_pressed("shoot") and can_shoot:
+		shoot()
+		
+func shoot():
+	if state == INVULNERABLE:
+		return
+	emit_signal('shoot', Bullet, $Muzzle.global_position, rotation)
+	can_shoot = false
+	$GunTimer.start()
 		
 func _integrate_forces(physics_state):
 	set_applied_force(thrust.rotated(rotation))
@@ -63,3 +83,6 @@ func _integrate_forces(physics_state):
 	if xform.origin.y < 0:
 		xform.origin.y = screensize.y
 	physics_state.set_transform(xform)
+
+func _on_GunTimer_timeout():
+	can_shoot = true
