@@ -85,4 +85,5 @@ func _integrate_forces(physics_state):
 	physics_state.set_transform(xform)
 
 func _on_GunTimer_timeout():
+    '''gives opportunity to shoot'''
 	can_shoot = true
